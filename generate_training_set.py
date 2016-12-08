@@ -3,6 +3,7 @@ from scipy.io import wavfile
 import h5py
 import numpy as np
 import pysptk
+import utils as utils
 
 rate = 16000
 window_size = 0.025
@@ -95,8 +96,9 @@ def generate_data(senteces_source = 'data_raw/txt.done.data', data_source_tag = 
     data_input = []
     data_output = []
     senteces = get_sentences(senteces_source)
-    for i in  range(start_number, end_number):
+    for i in  range(start_number, end_number+1):
         if "'" not in senteces[i-1] and '-' not in senteces[i-1]:
+            print(i)
             phonemes = tp.generate_tags(senteces[i-1])
             times = get_timing('data_raw/lab/'+data_source_tag+str(i)+'.lab')
             sound = wavfile.read('data_raw/wav/'+data_source_tag+str(i)+'.wav')[1]
@@ -117,13 +119,33 @@ def generate_data(senteces_source = 'data_raw/txt.done.data', data_source_tag = 
                     data_in.append(((time-start_time)/window_step)/(get_sound_number(phoneme_length[2])/window_step))
                     data_in.append(f0s[time%window_step])
                     time += window_step
+                    #data_in = np.asarray(data_in,dtype=float)
                     data_input.append(data_in)
     return data_input
 
+def get_data():
+    data = generate_data(start_number=1,end_number=9)
+    data.extend(generate_data(data_source_tag='arctic_a00', start_number=10,end_number=99))
+    #data.extend(generate_data(data_source_tag='arctic_a0', start_number=100,end_number=597))
+    #data.extend(generate_data(data_source_tag='arctic_b000', start_number=1,end_number=9))
+    #data.extend(generate_data(data_source_tag='arctic_b00', start_number=10,end_number=99))
+    #data.extend(generate_data(data_source_tag='arctic_b0', start_number=100,end_number=541))
+
+    normalize_by = np.zeros((216))
+    for i in range(200,216):
+        normalize_by[i] = 1
+    data_normalized =  data #utils.normalize_by_column(data=data, columns=normalize_by)[0]
+    generate_h5(data = data_normalized, filename='normalized_data')
+    train_data, validat_data, test_data = utils.train_validate_test(data, 0.8, 0.15, 0.05)
+    generate_h5(data = train_data, filename='training')
+    generate_h5(data = validat_data, filename='validation')
+    generate_h5(data = test_data, filename='test')
+
 def generate_h5(data, filename = 'train_set'):
     h5f = h5py.File(filename+'.h5', 'w')
-    h5f.create_dataset('dataset', data=data)
+    for i in range(0, len(data)):
+        h5f.create_dataset('dataset_'+str(i), data=data[i])
     h5f.close()
     
 
-generate_data()
+get_data()
