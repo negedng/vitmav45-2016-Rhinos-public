@@ -126,10 +126,10 @@ def generate_data(senteces_source = 'data_raw/txt.done.data', data_source_tag = 
 def get_data():
     data = generate_data(start_number=1,end_number=9)
     data.extend(generate_data(data_source_tag='arctic_a00', start_number=10,end_number=99))
-    #data.extend(generate_data(data_source_tag='arctic_a0', start_number=100,end_number=597))
-    #data.extend(generate_data(data_source_tag='arctic_b000', start_number=1,end_number=9))
-    #data.extend(generate_data(data_source_tag='arctic_b00', start_number=10,end_number=99))
-    #data.extend(generate_data(data_source_tag='arctic_b0', start_number=100,end_number=541))
+    data.extend(generate_data(data_source_tag='arctic_a0', start_number=100,end_number=597))
+    data.extend(generate_data(data_source_tag='arctic_b000', start_number=1,end_number=9))
+    data.extend(generate_data(data_source_tag='arctic_b00', start_number=10,end_number=99))
+    data.extend(generate_data(data_source_tag='arctic_b0', start_number=100,end_number=541))
 
     normalize_by = np.zeros((216))
     for i in range(200,216):
