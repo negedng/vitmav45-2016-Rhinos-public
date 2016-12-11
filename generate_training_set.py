@@ -4,20 +4,28 @@ import h5py
 import numpy as np
 import pysptk
 import utils as utils
+import librosa
 
+# audio file rate
 rate = 16000
-window_size = 0.025
-window_step = 0.005
 
-window_size = round(window_size*rate)
-window_step = round(window_step*rate)
+# frame data for pitch and mel-cepstrum
+frame_size = 512
+frame_step = 80
 
-def get_sound_number(time):
+# order and alpha of mel-cepstrum
+order = 25
+alpha = 0.41
+
+'''
+returns the number of frames for a given time (in sec)
+'''
+def get_frame_count(time):
     return round(time*rate)
 
-def get_file_name(tag, i):
-    return tag+i
-
+'''
+returns the sentences as list from a given file
+'''
 def get_sentences(filename):
     content = []
     with open(filename) as f:
@@ -27,6 +35,9 @@ def get_sentences(filename):
 
     return content
 
+'''
+returns phoneme and timing data for 1 sentence from a given file
+'''
 def get_timing(filename):
     data = []
     with open(filename) as f:
@@ -40,12 +51,15 @@ def get_timing(filename):
         data_.append([float(d[0]),phenome])
     return data_
 
-def normalize(data):
-    temp = np.float32(data) - np.min(data)
-    out = (temp / np.max(temp) - 0.5) * 2
-    return out
-
-def get_phoneme_lengths(phonemes, times):
+'''
+calculates the time for all phonemes in 1 sentence
+inputs:
+    phonemes: list of phonemes from written source
+    times: list of phonemes and time data from audio source
+returns: 
+    list of written phonemes with time data
+'''
+def get_phoneme_timings(phonemes, times):
     times_number = 0
     data = []
     while times_number < len(times) and times[times_number][1] == 'pau':
@@ -69,32 +83,26 @@ def get_phoneme_lengths(phonemes, times):
             times_number += 1
     return data
 
-def crop_sound(delta, sound):
-    delete_numbers = []
-    for i in range(0,delta):
-        delete_numbers.append(i)
-    sound_ = np.delete(sound, delete_numbers, None)
-    
-    sounds = []
-    delete_numbers = []
-    for i in range(0,window_step):
-        delete_numbers.append(i)
-    sounds.append(sound_)
-    for i in range(0,round(window_size/window_step-1)):
-        sounds.append(np.delete(sounds[-1], delete_numbers, None))
-    return sounds
-
-def generate_f0s(sounds):
-    f0s = []
-    for s in sounds:
-        f0s.append(pysptk.sptk.swipe(x=s, fs=rate, hopsize=window_size, otype='f0'))
-    f0s = np.asarray(f0s).flatten('F')
-    return f0s
-
-
+'''
+creates input and output data for the network
+inputs:
+    setence_source: written sentences path
+    data_source_tag: begining of each sentence filename
+    start_number: number of the first sentence
+    end_number: number of the last sentence (!not after the last!)
+outputs:
+    list of training data
+    network inputs:
+        [0:200] kvintphone with one-hot encoding
+        [200:213] phoneme tags
+        [213] number of frames in the phoneme
+        [214] frame position in the phoneme
+    network outputs:
+        [215] pitch for frame
+        [216:242] mc data for frame
+'''
 def generate_data(senteces_source = 'data_raw/txt.done.data', data_source_tag = 'arctic_a000', start_number = 1, end_number = 2):
     data_input = []
-    data_output = []
     senteces = get_sentences(senteces_source)
     for i in  range(start_number, end_number+1):
         if "'" not in senteces[i-1] and '-' not in senteces[i-1]:
@@ -102,50 +110,77 @@ def generate_data(senteces_source = 'data_raw/txt.done.data', data_source_tag = 
             phonemes = tp.generate_tags(senteces[i-1])
             times = get_timing('data_raw/lab/'+data_source_tag+str(i)+'.lab')
             sound = wavfile.read('data_raw/wav/'+data_source_tag+str(i)+'.wav')[1]
-            sound = np.array(sound, dtype=float)
-            phoneme_lengths = get_phoneme_lengths(phonemes=phonemes, times=times)
+            phoneme_timings = get_phoneme_timings(phonemes=phonemes, times=times)
+        
+            frames = librosa.util.frame(sound, frame_length=frame_size, hop_length=frame_step).astype(np.float64).T
+            frames *= pysptk.blackman(frame_size)
+            pitch = pysptk.swipe(sound.astype(np.float64), fs=rate, hopsize=frame_step, min=60, max=240, otype="pitch")
+            mc = np.apply_along_axis(pysptk.mcep, 1, frames, order, alpha,etype=1,eps=0.1)
 
-            for phoneme_length in phoneme_lengths:
-                start_time = get_sound_number(phoneme_length[1])
-                end_time = get_sound_number(phoneme_length[1]+phoneme_length[2])
-                f0s = generate_f0s(crop_sound((start_time-window_size)%window_step, sound))
+            for pt in range(0,len(phoneme_timings)):
+                phoneme_timing = phoneme_timings[pt]
+                start_time = get_frame_count(phoneme_timing[1])
+                end_time = get_frame_count(phoneme_timing[1]+phoneme_timing[2])
+                if start_time%frame_step < frame_step/2:
+                    start_time = start_time+frame_step - start_time%frame_step
+                else:
+                    start_time = start_time- start_time%frame_step
 
-                time = start_time
-                while time < get_sound_number(phoneme_length[1]+phoneme_length[2]):
+                if end_time%frame_step < frame_step/2:
+                    end_time = end_time+frame_step - end_time%frame_step
+                else:
+                    end_time = end_time- end_time%frame_step
+
+                t1 = round((start_time)/frame_step)
+                t2 = round(end_time/frame_step)+1
+                for k in range(t1,t2): 
                     data_in = []
-                    for p in phonemes[phoneme_length[0]][1]:
+                    for p in phonemes[phoneme_timing[0]][1]:
                         data_in.append(p)
-                    data_in.append(phoneme_length[2])
-                    data_in.append(((time-start_time)/window_step)/(get_sound_number(phoneme_length[2])/window_step))
-                    data_in.append(f0s[time%window_step])
-                    time += window_step
-                    #data_in = np.asarray(data_in,dtype=float)
+                    data_in.append(t2)
+                    data_in.append(k/(t2-t1))
+                    data_in.append(pysptk.swipe(sound[k*frame_step:k*frame_step+frame_size].astype(np.float64), fs=rate, hopsize=frame_size, min=60, max=240, otype="pitch"))
+                    data_in.extend(mc[k])
+                    data_in = np.asarray(data_in,dtype=float)
                     data_input.append(data_in)
+            
+            print(len(data_input))
+
     return data_input
 
+'''
+creates inputs and outputs as hd5 file for the network from all avaiable data
+outputs:
+    normalized_data.hd5
+    training.hd5
+    validation.hd5
+    test.hd5
+'''
 def get_data():
-    data = generate_data(start_number=1,end_number=9)
-    data.extend(generate_data(data_source_tag='arctic_a00', start_number=10,end_number=99))
-    data.extend(generate_data(data_source_tag='arctic_a0', start_number=100,end_number=597))
-    data.extend(generate_data(data_source_tag='arctic_b000', start_number=1,end_number=9))
-    data.extend(generate_data(data_source_tag='arctic_b00', start_number=10,end_number=99))
-    data.extend(generate_data(data_source_tag='arctic_b0', start_number=100,end_number=541))
+    data = generate_data(start_number=1,end_number=1)
+    #data.extend(generate_data(data_source_tag='arctic_a00', start_number=10,end_number=99))
+    #data.extend(generate_data(data_source_tag='arctic_a0', start_number=100,end_number=597))
 
-    normalize_by = np.zeros((216))
-    for i in range(200,216):
+    normalize_by = np.zeros((242))
+    for i in range(200,212):
         normalize_by[i] = 1
-    data_normalized =  data #utils.normalize_by_column(data=data, columns=normalize_by)[0]
+
+    data_normalized = utils.normalize_by_column(data=data, columns=normalize_by)[0]
     generate_h5(data = data_normalized, filename='normalized_data')
     train_data, validat_data, test_data = utils.train_validate_test(data, 0.8, 0.15, 0.05)
     generate_h5(data = train_data, filename='training')
     generate_h5(data = validat_data, filename='validation')
     generate_h5(data = test_data, filename='test')
 
+'''
+creates hd5 file from a given data with a given filename
+'''
 def generate_h5(data, filename = 'train_set'):
     h5f = h5py.File(filename+'.h5', 'w')
-    for i in range(0, len(data)):
-        h5f.create_dataset('dataset_'+str(i), data=data[i])
+    h5f.create_dataset('dataset',data=data)
     h5f.close()
     
-
+'''
+runs the script it can be remove later
+'''
 get_data()

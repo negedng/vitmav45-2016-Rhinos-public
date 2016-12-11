@@ -45,10 +45,10 @@ def normalize_by_column(data, columns):
         std    [0.,0.,1.,...]
     """
     if np.shape(data)[-1]!=np.shape(columns)[-1]:
-        error_message = 'input shape error '+np.shape(data)[-1]+'!='+np.shape(columns)[-1]
+        error_message = 'input shape error '+str(np.shape(data)[-1])+'!='+str(np.shape(columns)[-1])
         raise TypeError(error_message)
     a = np.array(data)
-    column_av = np.average(a, axis=0)
+    column_av = np.mean(a, axis=0)
     column_std = np.std(a,axis=0)
     
     new_matrix = (a-column_av[np.newaxis,:])/column_std[np.newaxis,:]
