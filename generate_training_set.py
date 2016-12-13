@@ -5,6 +5,9 @@ import numpy as np
 import pysptk
 import utils as utils
 import librosa
+import json
+
+
 
 # audio file rate
 rate = 16000
@@ -25,15 +28,20 @@ def get_frame_count(time):
 
 '''
 returns the sentences as list from a given file
+returns:
+    [[filename, sentence]]
 '''
 def get_sentences(filename):
     content = []
+    ret = []
     with open(filename) as f:
         content = f.readlines()
     for i in range(0,len(content)):
-        content[i] = content[i].split("_")[2]
-
-    return content
+        if len(content[i]) > 0:
+            content[i] = content[i].split('''"''')
+            if not any((c in "'-") for c in content[i][1]):
+                ret.append([content[i][0].split(' ')[1],content[i][1]])
+    return ret
 
 '''
 returns phoneme and timing data for 1 sentence from a given file
@@ -84,12 +92,9 @@ def get_phoneme_timings(phonemes, times):
     return data
 
 '''
-creates input and output data for the network
+creates input and output data for the network from one sentence
 inputs:
-    setence_source: written sentences path
-    data_source_tag: begining of each sentence filename
-    start_number: number of the first sentence
-    end_number: number of the last sentence (!not after the last!)
+    [filename, sentence]
 outputs:
     list of training data
     network inputs:
@@ -101,52 +106,88 @@ outputs:
         [215] pitch for frame
         [216:242] mc data for frame
 '''
-def generate_data(senteces_source = 'data_raw/txt.done.data', data_source_tag = 'arctic_a000', start_number = 1, end_number = 2):
+def generate_sentence_data(sentence_data):
+    print(sentence_data[0])
+
     data_input = []
-    senteces = get_sentences(senteces_source)
-    for i in  range(start_number, end_number+1):
-        if "'" not in senteces[i-1] and '-' not in senteces[i-1]:
-            print(i)
-            phonemes = tp.generate_tags(senteces[i-1])
-            times = get_timing('data_raw/lab/'+data_source_tag+str(i)+'.lab')
-            sound = wavfile.read('data_raw/wav/'+data_source_tag+str(i)+'.wav')[1]
-            phoneme_timings = get_phoneme_timings(phonemes=phonemes, times=times)
-        
-            frames = librosa.util.frame(sound, frame_length=frame_size, hop_length=frame_step).astype(np.float64).T
-            frames *= pysptk.blackman(frame_size)
-            pitch = pysptk.swipe(sound.astype(np.float64), fs=rate, hopsize=frame_step, min=60, max=240, otype="pitch")
-            mc = np.apply_along_axis(pysptk.mcep, 1, frames, order, alpha,etype=1,eps=0.1)
 
-            for pt in range(0,len(phoneme_timings)):
-                phoneme_timing = phoneme_timings[pt]
-                start_time = get_frame_count(phoneme_timing[1])
-                end_time = get_frame_count(phoneme_timing[1]+phoneme_timing[2])
-                if start_time%frame_step < frame_step/2:
-                    start_time = start_time+frame_step - start_time%frame_step
-                else:
-                    start_time = start_time- start_time%frame_step
+    data_source_tag = sentence_data[0]
+    sentence = sentence_data[1]
+    
+    phonemes = tp.generate_tags(sentence)
+    times = get_timing('data_raw/lab/'+data_source_tag+'.lab')
+    sound = wavfile.read('data_raw/wav/'+data_source_tag+'.wav')[1]
+    phoneme_timings = get_phoneme_timings(phonemes=phonemes, times=times)
+    frames = librosa.util.frame(sound, frame_length=frame_size, hop_length=frame_step).astype(np.float64).T
+    frames *= pysptk.blackman(frame_size)
+    pitch = pysptk.swipe(sound.astype(np.float64), fs=rate, hopsize=frame_step, min=60, max=240, otype="pitch")
+    mc = np.apply_along_axis(pysptk.mcep, 1, frames, order, alpha,etype=1,eps=0.1)
 
-                if end_time%frame_step < frame_step/2:
-                    end_time = end_time+frame_step - end_time%frame_step
-                else:
-                    end_time = end_time- end_time%frame_step
+    for pt in range(0,len(phoneme_timings)):
+        phoneme_timing = phoneme_timings[pt]
+        start_time = get_frame_count(phoneme_timing[1])
+        end_time = get_frame_count(phoneme_timing[1]+phoneme_timing[2])
+        if start_time%frame_step < frame_step/2:
+            start_time = start_time+frame_step - start_time%frame_step
+        else:
+            start_time = start_time- start_time%frame_step
 
-                t1 = round((start_time)/frame_step)
-                t2 = round(end_time/frame_step)+1
-                for k in range(t1,t2): 
-                    data_in = []
-                    for p in phonemes[phoneme_timing[0]][1]:
-                        data_in.append(p)
-                    data_in.append(t2)
-                    data_in.append(k/(t2-t1))
-                    data_in.append(pysptk.swipe(sound[k*frame_step:k*frame_step+frame_size].astype(np.float64), fs=rate, hopsize=frame_size, min=60, max=240, otype="pitch"))
-                    data_in.extend(mc[k])
-                    data_in = np.asarray(data_in,dtype=float)
-                    data_input.append(data_in)
+        if end_time%frame_step < frame_step/2:
+            end_time = end_time+frame_step - end_time%frame_step
+        else:
+            end_time = end_time- end_time%frame_step
+
+        t1 = round((start_time)/frame_step)
+        t2 = round(end_time/frame_step)+1
+        for k in range(t1,t2): 
+            data_in = []
+            for p in phonemes[phoneme_timing[0]][1]:
+                data_in.append(p)
+            data_in.append(np.int(t2))
+            data_in.append(np.float64(k)/(t2-t1))
+            data_in.append(pysptk.swipe(sound[k*frame_step:k*frame_step+frame_size].astype(np.float64), fs=rate, hopsize=frame_size, min=60, max=240, otype="pitch"))
+            data_in.extend(mc[k])
+            #data_in = np.asarray(data_in,dtype=np.float64)
+            data_input.append(data_in)
             
-            print(len(data_input))
-
+    print(len(data_input))
     return data_input
+
+'''
+generates data for the network from a given list of senteces with filenames
+input:
+    [[filename, sentence]]
+output:
+    list
+'''
+def generate_data(sentences):
+    data = []
+    for sentence in sentences:
+        data.extend(generate_sentence_data(sentence))
+    return data
+
+'''
+inputs:
+    senteces path
+    train_rate
+    validate_rate
+    test_rate
+return:
+    [train,validate,test]
+output:
+    training_senteces.json
+    validation_sentences.josn
+    test_sentences.json
+'''
+def get_train_validate_test_senteces(source_path='data_raw/txt.done.data', train_rate = 0.9, validate_rate = 0.05, test_rate = 0.05):
+    sentences = get_sentences(source_path)
+    sentences = utils.train_validate_test(data=sentences, train_rate=train_rate, validate_rate=validate_rate,test_rate=test_rate)
+
+    create_json('training_senteces.json',sentences[0])
+    create_json('validation_sentences.json',sentences[1])
+    create_json('test_sentences.json',sentences[2])
+
+    return sentences
 
 '''
 creates inputs and outputs as hd5 file for the network from all avaiable data
@@ -155,31 +196,57 @@ outputs:
     training.hd5
     validation.hd5
     test.hd5
-'''
+''' 
 def get_data():
-    data = generate_data(start_number=1,end_number=1)
-    #data.extend(generate_data(data_source_tag='arctic_a00', start_number=10,end_number=99))
-    #data.extend(generate_data(data_source_tag='arctic_a0', start_number=100,end_number=597))
+    sentences = get_train_validate_test_senteces()
+
+    print('get training data...')
+
+    test_data = generate_data(sentences[2])
+    normalize_by = np.zeros((242))
+    create_h5(data = test_data, filename='training')
+
+    print('get validation data...')
+
+    validate_data = generate_data(sentences[1])
+    create_h5(data = validate_data, filename='validation')
+
+    print('get test data...')
+
+    train_data = generate_data(sentences[0])
+    create_h5(data = train_data, filename='test')
 
     normalize_by = np.zeros((242))
-    for i in range(200,212):
+    for i in range(200,215):
         normalize_by[i] = 1
 
-    data_normalized = utils.normalize_by_column(data=data, columns=normalize_by)[0]
-    generate_h5(data = data_normalized, filename='normalized_data')
-    train_data, validat_data, test_data = utils.train_validate_test(data, 0.8, 0.15, 0.05)
-    generate_h5(data = train_data, filename='training')
-    generate_h5(data = validat_data, filename='validation')
-    generate_h5(data = test_data, filename='test')
+    data_standardized = utils.normalize_by_column(data=train_data, columns=normalize_by)
+    create_h5(data = data_standardized[0], filename='train-standardized')
+    create_h5(data = data_standardized[2], filename='train-mean')
+    create_h5(data = data_standardized[3], filename='train-std')
+    
+    
 
 '''
 creates hd5 file from a given data with a given filename
 '''
-def generate_h5(data, filename = 'train_set'):
+def create_h5(data, filename = 'train_set'):
+    data_ = np.array(data)
     h5f = h5py.File(filename+'.h5', 'w')
-    h5f.create_dataset('dataset',data=data)
+    h5f.create_dataset('dataset',data=data_)
     h5f.close()
-    
+   
+'''
+creates json file
+inputs:
+    filename
+    data
+    separators
+'''
+def create_json(filename, data, separators=('\n','\n')):
+    with open(filename, 'w') as outfile:
+        json.dump(data, outfile,separators=separators)
+
 '''
 runs the script it can be remove later
 '''

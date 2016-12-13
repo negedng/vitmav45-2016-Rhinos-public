@@ -44,38 +44,39 @@ def generate_tags(sentence):
     words = nltk.word_tokenize(sentence)
     tagged = nltk.pos_tag(words)
     phonemes = []
-    primary_phenomes = []
+    primary_phonemes = []
     words_with_data = []
 
     pos_sentence = 0
     pos_phoneme_in_sentence = 0
     for i in range(len(words)-1):
-        if (words[i] not in [',','.','!','?']):
+        if words[i].lower() in arpabet.keys():
             pos_word = 0
             word_phonemes = arpabet[words[i].lower()]
             for j in range(len(word_phonemes[0])):
-                phoneme = Phoneme()
-                phoneme_type = ''
-                if word_phonemes[0][j][-1] in '012':
-                    phoneme.stress = int(word_phonemes[0][j][-1])
-                    phoneme_type = word_phonemes[0][j][0:-1]
-                else:
-                    phoneme.stress = 3
-                    phoneme_type = word_phonemes[0][j]
+                if any((c in phoneme_dict.keys()) for c in word_phonemes[0][j][0:-1]) or any((c in phoneme_dict.keys()) for c in word_phonemes[0][j]):
+                    phoneme = Phoneme()
+                    phoneme_type = ''
+                    if word_phonemes[0][j][-1] in '012':
+                        phoneme.stress = int(word_phonemes[0][j][-1])
+                        phoneme_type = word_phonemes[0][j][0:-1]
+                    else:
+                        phoneme.stress = 3
+                        phoneme_type = word_phonemes[0][j]
 
-                phoneme.name = phoneme_type
-                phoneme.phoneme_type = phoneme_dict[phoneme_type]
+                    phoneme.name = phoneme_type
+                    phoneme.phoneme_type = phoneme_dict[phoneme_type]
 
-                phoneme.position_in_word = pos_word
-                pos_word = pos_word + 1
+                    phoneme.position_in_word = pos_word
+                    pos_word = pos_word + 1
 
-                phoneme.word_size = len(word_phonemes[0])
+                    phoneme.word_size = len(word_phonemes[0])
 
-                phoneme.word_number = i
-                phonemes.append(phoneme)
+                    phoneme.word_number = i
+                    phonemes.append(phoneme)
 
-                if phoneme.stress == 1:
-                    primary_phenomes.append(len(phonemes) - 1)
+                    if phoneme.stress == 1:
+                        primary_phonemes.append(len(phonemes) - 1)
 
 
         word = Word()
@@ -111,16 +112,16 @@ def generate_tags(sentence):
         tag.append(phoneme.word_size - phoneme.position_in_word -1)
 
         j = 0
-        while j < len(primary_phenomes) and primary_phenomes[j] < i:
+        while j < len(primary_phonemes) and primary_phonemes[j] < i:
             j = j+1
 
         j = j-1
 
-        if i <= primary_phenomes[j] or j == -1: tag.append(0)
-        else: tag.append(i - primary_phenomes[j])
+        if len(primary_phonemes) <= 0 or i <= primary_phonemes[j] or j == -1: tag.append(0)
+        else: tag.append(i - primary_phonemes[j])
 
-        if (j > len(primary_phenomes) - 2): tag.append(0)
-        else: tag.append(primary_phenomes[j+1] - i)
+        if (j > len(primary_phonemes) - 2): tag.append(0)
+        else: tag.append(primary_phonemes[j+1] - i)
 
 
         word_number = phoneme.word_number
