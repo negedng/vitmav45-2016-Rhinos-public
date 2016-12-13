@@ -105,6 +105,7 @@ outputs:
     network outputs:
         [215] pitch for frame
         [216:242] mc data for frame
+        [242] number of frames in the phoneme
 '''
 def generate_sentence_data(sentence_data):
     print(sentence_data[0])
@@ -147,6 +148,7 @@ def generate_sentence_data(sentence_data):
             data_in.append(np.float64(k)/(t2-t1))
             data_in.append(pysptk.swipe(sound[k*frame_step:k*frame_step+frame_size].astype(np.float64), fs=rate, hopsize=frame_size, min=60, max=240, otype="pitch"))
             data_in.extend(mc[k])
+            data_in.append(np.int(t2))
             #data_in = np.asarray(data_in,dtype=np.float64)
             data_input.append(data_in)
             
@@ -200,23 +202,22 @@ outputs:
 def get_data():
     sentences = get_train_validate_test_senteces()
 
-    print('get training data...')
+    print('get test data...')
 
     test_data = generate_data(sentences[2])
-    normalize_by = np.zeros((242))
-    create_h5(data = test_data, filename='training')
+    create_h5(data = test_data, filename='test')
 
     print('get validation data...')
 
     validate_data = generate_data(sentences[1])
     create_h5(data = validate_data, filename='validation')
 
-    print('get test data...')
+    print('get training data...')
 
     train_data = generate_data(sentences[0])
-    create_h5(data = train_data, filename='test')
+    create_h5(data = train_data, filename='training')
 
-    normalize_by = np.zeros((242))
+    normalize_by = np.zeros((243))
     for i in range(200,215):
         normalize_by[i] = 1
 
