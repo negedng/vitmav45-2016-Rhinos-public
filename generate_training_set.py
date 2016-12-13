@@ -145,7 +145,7 @@ def generate_sentence_data(sentence_data):
             for p in phonemes[phoneme_timing[0]][1]:
                 data_in.append(p)
             data_in.append(np.int(t2-t1))
-            data_in.append(np.float64(k)/(t2-t1))
+            data_in.append(np.float64(k-t1)/(t2-t1))
             data_in.append(pysptk.swipe(sound[k*frame_step:k*frame_step+frame_size].astype(np.float64), fs=rate, hopsize=frame_size, min=60, max=240, otype="pitch"))
             data_in.extend(mc[k])
             data_in.append(np.int(t2-t1))
