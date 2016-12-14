@@ -2,8 +2,6 @@
 
 This is the Rhinos team deep learning project for BME vitmav45 course in 2016.
 
-## Guide
-
 ### Results
 [Results.ipynb](https://github.com/BME-SmartLab-Education/vitmav45-2016-Rhinos/blob/master/Results.ipynb) contains our results, it can be compiled standalone with the required packages (all other required files in the repository).
 
