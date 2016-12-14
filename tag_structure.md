@@ -1,9 +1,8 @@
-# Structure of a tag #
+# structure of text base tags #
 
 ### Phoneme ###
-* [0] **stress** *(1=primary, 2=secondary, 0=no stress, 3=no data)*
-* [1] **actual phoneme**
-* [2-5] **nearby phonemes** *(before and after 2)*
+* [0-4] **actual and nearby phonemes** *(before and after 2)*
+* [5] **stress** *(1=primary, 2=secondary, 0=no stress, 3=no data)*
 * [6-7] **phoneme position** *(number of phonemes before and after in the word)*
 * [8-9] **distance of a primary phoneme** *(before and after)*
 
