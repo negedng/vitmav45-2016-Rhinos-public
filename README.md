@@ -17,6 +17,7 @@ Our trained models can be found in the models_data folder, model notebooks files
 * Németh Gergely - sound processing, network design and training
 * Szántó Tamás - text processing, network design and training, AWS management
 
-## Some help
+### Further contributors
 * Benda Krisztián - network design research
-* László Dániel - help in AWS setup
+* László Dániel - AWS setup
+* Tömpe Boldizsár
