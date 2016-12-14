@@ -13,7 +13,7 @@ Or you can download our preprocessed [dataset](https://s3-us-west-2.amazonaws.co
 
 Our trained models can be found in the models_data folder, model notebooks files can be used for training.
 
-## Contributors
+### Contributors
 * Németh Gergely - sound processing, network design and training
 * Szántó Tamás - text processing, network design and training, AWS management
 
