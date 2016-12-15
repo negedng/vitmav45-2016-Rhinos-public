@@ -25,6 +25,16 @@ Or you can download our preprocessed [dataset](https://s3-us-west-2.amazonaws.co
 
 Our trained models can be found in the models_data folder, model notebooks files can be used for training.
 
+### Requirements
+* numpy
+* matplotlib
+* librosa
+* h5py
+* pysptk
+* scipy
+* keras
+* nltk (with corpus downloaded)
+
 ### Scripts
 
 * [text_process.py](https://github.com/BME-SmartLab-Education/vitmav45-2016-Rhinos/blob/master/text_process.py) - creates phoneme based tags from a sentence [```generate_tags(sentence)```]
