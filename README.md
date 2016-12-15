@@ -7,8 +7,8 @@ Creating a DNN based TTS system.
 
 ###### Achieved:
 * text tagging (preprocessing)
-* pitch and voiced / unvoiced prediction (with working trained models)
-* we have a trained modal for mel-cepstrum spectral parameters (but it is not correct enough yet)
+* pitch and voiced / unvoiced prediction (with working trained networks)
+* we have a trained network for mel-cepstrum spectral parameters (but it is not correct enough yet)
 
 ###### Need for a working system:
 * phoneme length prediction network (target values included in train data but we haven't got time to design and train a network)
