@@ -1,4 +1,4 @@
-# structure of text base tags #
+# Structure of text base tags #
 
 ### Phoneme ###
 * [0-4] **actual and nearby phonemes** *(before and after 2)*
