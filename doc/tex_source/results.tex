@@ -1,10 +1,37 @@
+\section{Megvalósítás}
+\subsection{Használt erőforrások}
+A háló összerakást saját gépen kezdtük el. Majd a véglegesítését és a tanításokat AWS szerveren, NVIDIA Tesla K80 12GB videókártyán végeztük. A tanításokat Jupyter notebook-ban végeztük, ezek elmentett adatait aztán tensorboard segítségével elemeztük.
+
 \subsection{Eredmények}
-Pitch egész jó, MC-n van mit javítani. Túl darabos.
 
-Zöngés és zöngétlen hangok becslése
+Zöngésség becslésére nagyon jó, alapfrekvencia (pitch érték) meghatározására használhatóan jó és a spektrélis paraméter (Mel-Cepstrum) jósolására kezdetleges eredményeket sikerült elérnünk. (utóbbiról ezért nem is mellékeltünk tanítási és validációs grafikonokat). Hiperparaméter optimalizálás tekintetében egyelőre kézzel dolgoztunk (ez még javításra szorul), már is sikerült használható pontosságot  elérnünk.
 
-\includegraphics[width=\textwidth,keepaspectratio]{uv_fig}
+\textit{(A grafikonk y tengelyén az MSE hiba értéke x tengelyén az elvégzett epochok szmáa látható.)}
 
-Pitch értékek becslése
+\begin{minipage}{0.5\textwidth}
+Zöngésség becslése egyszerűbb, futásidő tekintetében gyorsabb feladatnak bizonyult. Ezért itt nem alkalmaztunk early stopping-ot, hanem a több próbálkozás után a fixen 410 epoch-kal történő tanításnál maradtunk.
+
+A teszt adatainkon elért eredmények:
+
+pontosság 0.8342
+
+költségfüggvény: 0.1560
+
+\textit{(MSE hiba értékekkel számítva)}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+	\flushright	
+	\includegraphics[width=0.8\textwidth,keepaspectratio]{uv_fig}
+\end{minipage}
+
+Az alapfrekvencia tanítása esetén alkamaztunk early stoppig-ot. Ez azonban (a paramétereinek állítása után is) túl hamar állt meg. Ennek következtében több tanítást is elvégeztünk egymás után. Az itt kapott eredményeink messze nem olyan szépek mint a zöngésségé, de ezek is hasznaálhatónak bizonyultak.
+
+A teszt adatainkon elért eredmények:
+
+pontosság 0.07214
+
+költségfüggvény: 0.4243
+
+\textit{(MSE hiba értékekkel számítva)}
 
 \includegraphics[width=\textwidth,keepaspectratio]{pitch_fig}
