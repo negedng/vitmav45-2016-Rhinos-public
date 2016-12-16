@@ -1,19 +1,42 @@
-\subsection{Bemeneti és kimeneti paraméterek}
-\subsubsection{One Hot kódolás}
-A fonéma azonosítására az OneHot kódolást alkalmaztuk (/!TODO referencia), azaz minden fonémára 40 paramétert generáltunk. A már megismert fonéma cimkéket kiegészítettük a fonémában található keretek számával és a keret fonémán belüli elhelyezkedésével, így a kerethez tartozó 215 bemeneti paraméter az alábbiakból tevődik össze:
-\subsubsection{Bemeneti paraméterek}
-\begin{minipage}{0.5\textwidth}
+\section{Bemeneti és kimeneti paraméterek}
+\subsection{Szövegfüggő címkék}
+A címke generálás egységeként egy mondatot használtunk fel. Ezt az nltk eszköz segítségével elemeztük majd az eredményekből állítottuk össze a címkéket. A címkék alapjául az aktuális fonémák szolgátak, később még ezek lettek tovább bontva idő keret szerint.A fonéma azonosítására az OneHot kódolást alkalmaztuk, azaz minden fonémát 40 értékkel azonosítottunk.
+
+A következő szöveg függő címkéket hoztuk létre:
+
 \begin{itemize}
-	\item 0-200 A 40 paraméter a kvinfónra(2-1-2)
-	\item 200-213 Fonéma cimkék
-	\item 213 A fonémán belüli keretek száma
-	\item 214 A keret elhelyezkedése a fonémán belül
-\end{itemize} 
+	\item aktuális fonéma és az őt körülvevő két-két fonéma
+	\item hangsúly
+	\item megelőző és követő fonémák száma a szóban 
+	\item távolság hangsúlyos fonémától mindkét irányban
+	\item szó szófaja
+	\item szó pozíciója a mondatban
+	\item fonémák száma az aktuális szóban és két szomszédjában
+	\item szavak száma a mondatba
+	\item fonémák száma a mondatban
+\end{itemize}
+
+\subsection{Bemeneti paraméterek}
+A szövegfüggő fonéma címkéket egészítettük ki a fonémában található időkeretek számával és a keret fonémán belüli elhelyezkedésével. Így a kerethez tartozó 215 bemeneti paraméter az alábbiakból tevődik össze:
+
+
+\begin{minipage}{0.5\textwidth}
+	\begin{itemize}
+		\item 0-200 A 40-40 paraméter a kvinfón(2-1-2) fonémáira
+		\item 200-213 további szövegfüggő címkék
+		\item 213 A fonémán belüli időkeretek száma
+		\item 214 A keret elhelyezkedése a fonémán belül
+	\end{itemize} 
 \end{minipage} \hfill
 \begin{minipage}{0.5\textwidth}
-\includegraphics[width=5.5cm,keepaspectratio]{tag_struct}
+	\centering
+	Címkék létrehozásának folyamata
+	\includegraphics[width=5cm,keepaspectratio]{tag_struct}
 \end{minipage} \hfill
-\subsubsection{Kimeneti paraméterek}
+\subsection{Kimeneti paraméterek}
+Az előző felsorolást folytatva az aktuális időkerethez tartozó elvárt a kimenet paraméterek a következők:
+
+ 
 \begin{itemize}
 	\item 215 a keret hangmagasság értéke
 	\item 216-242 a Mel-Cepstrum 26 paramétere
