@@ -1,6 +1,6 @@
 \section{Bemeneti és kimeneti paraméterek}
 \subsection{Szövegfüggő címkék}
-A címke generálás egységeként egy mondatot használtunk fel. Ezt az nltk eszköz segítségével elemeztük majd az eredményekből állítottuk össze a címkéket. A címkék alapjául az aktuális fonémák szolgátak, később még ezek lettek tovább bontva idő keret szerint.A fonéma azonosítására az OneHot kódolást alkalmaztuk, azaz minden fonémát 40 értékkel azonosítottunk.
+A címke generálás egységeként egy mondatot használtunk fel. Ezt az nltk eszköz segítségével elemeztük majd az eredményekből állítottuk össze a címkéket. A címkék alapjául az aktuális fonémák szolgátak, később még ezek lettek továbbbontva időkeret szerint.A fonéma azonosítására OneHot kódolást alkalmaztunk, azaz minden fonémát 40 értékkel azonosítottunk.
 
 A következő szöveg függő címkéket hoztuk létre:
 
@@ -34,7 +34,7 @@ A szövegfüggő fonéma címkéket egészítettük ki a fonémában található
 	\includegraphics[width=5cm,keepaspectratio]{tag_struct}
 \end{minipage} \hfill
 \subsection{Kimeneti paraméterek}
-Az előző felsorolást folytatva az aktuális időkerethez tartozó elvárt a kimenet paraméterek a következők:
+Az előző felsorolást folytatva az aktuális időkerethez tartozó elvárt kimenet paraméterek a következők:
 
  
 \begin{itemize}
@@ -43,7 +43,7 @@ Az előző felsorolást folytatva az aktuális időkerethez tartozó elvárt a k
 	\item 242 a fonémán belüli keretek száma
 \end{itemize}
 \subsection{Spektrális és gerjesztési paraméterek}
-Mint említettük a prediktálás alapja a spektrális és gerjesztési paraméterek megadása keretenként. Ezen paraméterek segítségével a PyPSTK \ [2] python csomag használásával állíthatjuk elő az audio kimenetet, valamint hasonlóképpen ezt a csomagot használjuk az adataink a tiszta hangból való előállítására.
+Mint említettük a prediktálás alapja a spektrális és gerjesztési paraméterek megadása keretenként. Ezen paraméterek segítségével a PyPSTK \ [2] python csomag használatával állíthatjuk elő az audio kimenetet, valamint hasonlóképpen ezt a csomagot használjuk az adataink a tiszta hangból való előállítására.
 \subsubsection{Mel-Cepstrum}
 A paraméterek előállításához, visszafejtéséhez a PyPSTK Mel-Cepstrum alapú algoritmusát alkalmazzuk. Az algoritmust T. Fukada és társai fejlesztették ki.\ [3]
 

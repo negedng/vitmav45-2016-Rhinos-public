@@ -1,12 +1,12 @@
 \section{Megvalósítás}
 \subsection{Használt erőforrások}
-A háló összerakást saját gépen kezdtük el. Majd a véglegesítését és a tanításokat AWS szerveren, NVIDIA Tesla K80 12GB videokártyán végeztük. A tanításokat Jupyter notebook-ban végeztük, ezek elmentett adatait aztán Tensorboard segítségével elemeztük.
+A háló összerakást saját gépen kezdtük el. Majd a véglegesítését és a tanításokat AWS szerveren, NVIDIA Tesla K80 12GB videokártyán végeztük. Jupyter notebook-ban futtatuk a tanításokat, ezek elmentett adatait aztán Tensorboard segítségével elemeztük.
 
 \subsection{Eredmények}
 
-Zöngésség becslésére nagyon jó, alapfrekvencia (pitch érték) meghatározására használhatóan jó és a spektrális paraméter (Mel-Cepstrum) jósolására kezdetleges eredményeket sikerült elérnünk. (utóbbiról ezért nem is mellékeltünk tanítási és validációs grafikonokat). Hiperparaméter optimalizálás tekintetében egyelőre kézzel dolgoztunk (ez még javításra szorul), már is sikerült használható pontosságot  elérnünk.
+Zöngésség becslésére nagyon jó, alapfrekvencia (pitch érték) meghatározására használhatóan jó és a spektrális paraméter (Mel-Cepstrum) jósolására kezdetleges eredményeket sikerült elérnünk. (utóbbiról ezért nem is mellékeltünk tanítási és validációs grafikonokat). Hiperparaméter optimalizálás tekintetében egyelőre kézzel dolgoztunk (ez még javításra szorul), már így is sikerült használható pontosságot  elérnünk.
 
-\textit{(A grafikonk y tengelyén az MSE hiba értéke x tengelyén az elvégzett epochok száma látható.)}
+\textit{(A grafikonk y tengelyén az MSE hiba értéke x tengelyén az elvégzett epoch-ok száma látható.)}
 
 \begin{minipage}{0.5\textwidth}
 	Zöngésség becslése egyszerűbb, futásidő tekintetében gyorsabb feladatnak bizonyult. Ezért itt nem alkalmaztunk early stopping-ot, hanem a több próbálkozás után a fixen 410 epoch-kal történő tanításnál maradtunk.
@@ -28,9 +28,9 @@ Az alapfrekvencia tanítása esetén alkalmaztunk early stoppig-ot. Ez azonban (
 
 A teszt adatainkon elért eredmények:
 
-pontosság 0.07214
+pontosság: 0.4243
 
-költségfüggvény: 0.4243
+költségfüggvény: 0.07214
 
 \textit{(MSE hiba értékekkel számítva)}
 
