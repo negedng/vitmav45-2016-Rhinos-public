@@ -3,7 +3,7 @@
 A háló összerakást saját gépen kezdtük el. Majd a véglegesítését és a tanításokat AWS szerveren, NVIDIA Tesla K80 12GB videokártyán végeztük. Jupyter notebook-ban futtatuk a tanításokat, ezek elmentett adatait aztán Tensorboard segítségével elemeztük.
 
 \subsection{Eredmények}
-
+\subsubsection{Zöngésség}
 Zöngésség becslésére nagyon jó, alapfrekvencia (pitch érték) meghatározására használhatóan jó és a spektrális paraméter (Mel-Cepstrum) jósolására kezdetleges eredményeket sikerült elérnünk. (utóbbiról ezért nem is mellékeltünk tanítási és validációs grafikonokat). Hiperparaméter optimalizálás tekintetében egyelőre kézzel dolgoztunk (ez még javításra szorul), már így is sikerült használható pontosságot  elérnünk.
 
 \textit{(A grafikonk y tengelyén az MSE hiba értéke x tengelyén az elvégzett epoch-ok száma látható.)}
@@ -23,7 +23,7 @@ Zöngésség becslésére nagyon jó, alapfrekvencia (pitch érték) meghatároz
 	\flushright	
 	\includegraphics[width=0.8\textwidth,keepaspectratio]{uv_fig}
 \end{minipage}
-
+\subsubsection{Alapfrekvencia}
 Az alapfrekvencia tanítása esetén alkalmaztunk early stoppig-ot. Ez azonban (a paramétereinek állítása után is) túl hamar állt meg. Ennek következtében több tanítást is elvégeztünk egymás után. Az itt kapott eredményeink messze nem olyan szépek mint a zöngésségé, de ezek is használhatónak bizonyultak.
 
 A teszt adatainkon elért eredmények:
@@ -35,3 +35,7 @@ költségfüggvény: 0.07214
 \textit{(MSE hiba értékekkel számítva)}
 
 \includegraphics[width=\textwidth,keepaspectratio]{pitch_fig}
+\subsubsection{MC paraméterek}
+MC tanításakor kiütközött, hogy a bemeneti paramétereink nagyon megegyezőek voltak fonémán belül, így darabos lett a tanítás. Ez a magasabb MC értékekre jelentős hibát okozott, így megpróbáltuk kevesebb mc érték használatát pontosítani.
+\subsubsection{Fonéma hossz}
+Fonéma hossz becslésnél csoportosítást valósítottunk meg, a fonémákat 8 csoportba osztottuk, a csoportok között 1,25 ms eltéréssel és a csoportra végeztünk classificationt.
