@@ -2,7 +2,8 @@
 
 This is the Rhinos team deep learning project for BME vitmav45 course in 2016.
 <br>
-Detailed Hungarian documentation is available [here](https://github.com/BME-SmartLab-Education/vitmav45-2016-Rhinos/blob/master/doc/documentation.pdf).
+Detailed Hungarian documentation is available [here](https://github.com/BME-SmartLab-Education/vitmav45-2016-Rhinos/blob/master/doc/documentation.pdf).<br>
+WAV samples are available in [doc/wav_samples](https://github.com/BME-SmartLab-Education/vitmav45-2016-Rhinos/tree/master/doc/wav_samples).
 
 ### Goal
 Creating a DNN based TTS system.
