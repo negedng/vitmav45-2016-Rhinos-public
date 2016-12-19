@@ -1,13 +1,13 @@
 \section{További lehetőségek}
 
-A kész rendszerhez jelenleg két további problémát kell megoldanunk, egyrészt a fonémák hosszának becslésére új hálót kell létrehoznunk, valamint a spektrális paraméterek becslésén kell javítanunk. A hossz meghatározás egy új probléma ezzel még nem tudtunk foglalkozni. Jelenleg a generált tanító adatainkban szerepelnek már az ehhez tartozó elvárt értékek is. Spektrális paraméterek meghatározására már hoztunk létre hálót és tanítottunk, ennek pontosságán szeretnénk javítani. Az esetleges módszerek a következőek: további címkék létrehozása (pl. legyen több időkerettel kapcsolatos), más időfelbontás választása, más spektrális paraméter keresése.
+Jelenleg van egy kész rendszerünk, amely bevitt szöveg alapján hangot állít elő. Minőségi problémák azonban vannak még az előállított hanggal. Ezen kétféleképpen tervezünk még javítani egyrészt további új adatokon való tanítással, valamint az előfeldolgozási folyamatunk javításával (több, kifejezőbb címke bevezetése). Ezen felül további minőségi javulást lehet elérni több spektrális paraméter alkalmazásával is. Minőség javítás mellett még további cél saját felhasználói felülettel rendelkező rendszer létrehozása. Itt többféle út is lehetséges egyrészt szerver kliens jellegű felépítés másrészt erőforrásigénytől függően egyedülálló rendszer. 
 
 A fenti bekezdés pontokban:
 
 \begin{itemize}
-	\item fonéma hossz becslése
-	\item pontosabb spektrális paraméter becslés
-	\item rendszer keretének megalkotása
+	\item minőség javítás új adatokkal
+	\item címkézés felülvizsgálata, további spektrélis paraméterek
+	\item felhasználói felület fejlesztése
 \end{itemize}
 
 Hosszútávú célként említhető még a WaveNet jellegű implementáció további fejlesztése.
