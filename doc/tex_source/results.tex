@@ -1,7 +1,12 @@
 \section{Megvalósítás}
 \subsection{Használt erőforrások}
 A háló összerakást saját gépen kezdtük el. Majd a véglegesítését és a tanításokat AWS szerveren, NVIDIA Tesla K80 12GB videokártyán végeztük. Jupyter notebook-ban futtatuk a tanításokat, ezek elmentett adatait aztán Tensorboard segítségével elemeztük.
+\subsection{Fejlesztés}
+A fejlesztés során scriptet írtunk az adatok generálására( {\it generate\_dataset.py}). Ez állítja elő a tiszta adatfájlokból a hálók bemeneteit.
 
+A különböző hálókat különböző jupyter notebookokban teszteltük. Ezek a {\it model} kezdetű notebookokban találhatóak.
+
+A végső eredményeket a {\it results} notebookban összegeztük, ez végigfuttatható demonstrációként hamar előáll. 
 \subsection{Eredmények}
 \subsubsection{Zöngésség}
 Zöngésség becslésére nagyon jó, alapfrekvencia (pitch érték) meghatározására használhatóan jó és a spektrális paraméter (Mel-Cepstrum) jósolására kezdetleges eredményeket sikerült elérnünk. (utóbbiról ezért nem is mellékeltünk tanítási és validációs grafikonokat). Hiperparaméter optimalizálás tekintetében egyelőre kézzel dolgoztunk (ez még javításra szorul), már így is sikerült használható pontosságot  elérnünk.
