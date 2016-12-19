@@ -37,8 +37,37 @@ költségfüggvény: 0.07214
 \includegraphics[width=\textwidth,keepaspectratio]{pitch_fig}
 \subsubsection{MC paraméterek}
 MC tanításakor kiütközött, hogy a bemeneti paramétereink nagyon megegyezőek voltak fonémán belül, így darabos lett a tanítás. Ez a magasabb MC értékekre jelentős hibát okozott, így megpróbáltuk kevesebb mc érték használatát pontosítani.
+
+\begin{minipage}{0.5\textwidth}	
+	A teszt adatainkon elért eredmények:
+	
+	pontosság 0.2927
+	
+	költségfüggvény: 0.2086
+	
+	\textit{(MSE hiba értékekkel számítva)}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+	\flushright	
+	\includegraphics[width=\textwidth,keepaspectratio]{length_fig}
+\end{minipage}
 \subsubsection{Fonéma hossz}
-Fonéma hossz becslésnél csoportosítást valósítottunk meg, a fonémákat 8 csoportba osztottuk, a csoportok között 1,25 ms eltéréssel és a csoportra végeztünk classificationt.
+Fonéma hossz becslésnél csoportosítást valósítottunk meg, a fonémákat 8 csoportba osztottuk, a csoportok között 12,5 ms eltéréssel és a csoportra végeztünk classificationt. Erre azért volt szükség mivel viszonylag kevés, géppel annotált tanító adat állt a rendelkezésünkre, ezek alapján nem sikerült használható eredményeket elérni. Az adatokban szereplő eredeti hosszak vizsgálata után ezt a csoportosítási módot választottuk, két szempont a megfelelő differenciálódás és a jelentősen kilógó adatok levágása volt. Tehát minden fonémánk 40 és 140 ms közé került. (A tanító adatainkat is ez alapján módosítottuk még a feldolgozási fázisban, minden keretnél hosszabb fonémát 140 ms-nél levágunk.)
+
+\begin{minipage}{0.5\textwidth}	
+	A teszt adatainkon elért eredmények:
+	
+	pontosság 0.4619
+	
+	költségfüggvény: 0.02419
+	
+	\textit{(MSE hiba értékekkel számítva)}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+	\flushright	
+	\includegraphics[width=\textwidth,keepaspectratio]{length_fig}
+\end{minipage}
+
 \subsubsection{Teljes becslő}
 A fenti paraméterek ismeretében teljes TTS végezhető. 
 
