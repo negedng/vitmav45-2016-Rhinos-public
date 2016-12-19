@@ -10,11 +10,14 @@ Creating a DNN based TTS system.
 ###### Achieved:
 * text tagging (preprocessing)
 * pitch and voiced / unvoiced prediction (with working trained networks)
-* we have a trained network for mel-cepstrum spectral parameters (but it is not correct enough yet)
+* mel-cepstrum spectral parameter prediction
+* phoneme length prediction
+* speak generation from text
 
 ###### Need for a working system:
-* phoneme length prediction network (target values included in train data but we haven't got time to design and train a network)
-* better spectral parameter prediction
+* more training on new data for better qualty
+* extends tags and add mor spectral parameters
+* ui
 
 ### Results
 [Results.ipynb](https://github.com/BME-SmartLab-Education/vitmav45-2016-Rhinos/blob/master/Results.ipynb) contains our results, it can be compiled standalone with the required packages (all other required files in the repository).
