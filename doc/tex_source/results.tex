@@ -39,3 +39,7 @@ költségfüggvény: 0.07214
 MC tanításakor kiütközött, hogy a bemeneti paramétereink nagyon megegyezőek voltak fonémán belül, így darabos lett a tanítás. Ez a magasabb MC értékekre jelentős hibát okozott, így megpróbáltuk kevesebb mc érték használatát pontosítani.
 \subsubsection{Fonéma hossz}
 Fonéma hossz becslésnél csoportosítást valósítottunk meg, a fonémákat 8 csoportba osztottuk, a csoportok között 1,25 ms eltéréssel és a csoportra végeztünk classificationt.
+\subsubsection{Teljes becslő}
+A fenti paraméterek ismeretében teljes TTS végezhető. 
+
+A mondat alapján fonéma hosszakat becslünk, majd párhuzamosan zöngésség-alapfrekvencia és mc paraméter becslés folyik, végül a kapott eredményekből előállítható a kimenet.
