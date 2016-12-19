@@ -14,7 +14,7 @@ Creating a DNN based TTS system.
 * phoneme length prediction
 * speak generation from text
 
-###### Need for a working system:
+###### Future:
 * more training on new data for better qualty
 * extends tags and add mor spectral parameters
 * ui
