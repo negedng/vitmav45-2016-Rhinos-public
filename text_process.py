@@ -108,8 +108,8 @@ def generate_tags(sentence):
 
         tag.append(phoneme.stress)
 
-        tag.append(phoneme.position_in_word)
-        tag.append(phoneme.word_size - phoneme.position_in_word -1)
+        tag.append(phoneme.position_in_word/phoneme.word_size)
+        tag.append((phoneme.word_size - phoneme.position_in_word -1)/phoneme.word_size)
 
         j = 0
         while j < len(primary_phonemes) and primary_phonemes[j] < i:
@@ -127,8 +127,8 @@ def generate_tags(sentence):
         word_number = phoneme.word_number
         tag.append(word_type_dict[tagged[word_number][1]])
 
-        tag.append(word_number)
-        tag.append(len(words) - word_number - 1)
+        tag.append(word_number/len(words))
+        tag.append((len(words) - word_number - 1)/len(words))
 
         tag.append(words_with_data[word_number].number_of_phonemes)
         if word_number == 0: tag.append(0)

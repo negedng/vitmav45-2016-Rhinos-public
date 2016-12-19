@@ -13,11 +13,11 @@ import json
 rate = 16000
 
 # frame data for pitch and mel-cepstrum
-frame_size = 512
+frame_size = 256
 frame_step = 80
 
 # order and alpha of mel-cepstrum
-order = 25
+order = 5
 alpha = 0.41
 
 # default path for generated files 
@@ -80,14 +80,15 @@ def get_phoneme_timings(phonemes, times):
         if times_number < len(times) and times[times_number][1] == phonemes[phoneme_number][0].lower():
             actual_data.append(phoneme_number)
         elif times_number+1 < len(times) and times[times_number+1][1] == phonemes[phoneme_number][0].lower():
-            times_number += 1
             actual_data.append(phoneme_number)
+            times_number += 1
+        elif times_number+2 < len(times) and times[times_number+2][1] == phonemes[phoneme_number][0].lower():
+            actual_data.append(phoneme_number)
+            times_number += 2
         if (len(actual_data) > 0):
             actual_data.append(times[times_number][0])
             end_time = times[-1][0]
-            if times_number+2 < len(times) and times[times_number+1][1] == 'pau':
-                end_time = times[times_number+2][0]
-            elif times_number+1 < len(times):
+            if (times_number+1 < len(times)):
                 end_time = times[times_number+1][0]
             actual_data.append(end_time-actual_data[-1])
             data.append(actual_data)
@@ -124,8 +125,9 @@ def generate_sentence_data(sentence_data):
     phoneme_timings = get_phoneme_timings(phonemes=phonemes, times=times)
     frames = librosa.util.frame(sound, frame_length=frame_size, hop_length=frame_step).astype(np.float64).T
     frames *= pysptk.blackman(frame_size)
-    pitch = pysptk.swipe(sound[:-frame_size].astype(np.float64), fs=rate, hopsize=frame_step, min=60, max=240, otype="pitch")
+    pitch = pysptk.swipe(sound[:-frame_size].astype(np.float64), fs=rate, hopsize=frame_step, min=100, max=150, otype="pitch")
     mc = np.apply_along_axis(pysptk.mcep, 1, frames, order, alpha,etype=1,eps=0.1)
+
 
     for pt in range(0,len(phoneme_timings)):
         phoneme_timing = phoneme_timings[pt]
@@ -142,7 +144,7 @@ def generate_sentence_data(sentence_data):
             end_time = end_time- end_time%frame_step
 
         t1 = round((start_time)/frame_step)
-        t2 = round(end_time/frame_step)+1
+        t2 = np.min([round(end_time/frame_step)+1,t1+25])
         for k in range(t1,t2): 
             data_in = []
             for p in phonemes[phoneme_timing[0]][1]:
@@ -156,6 +158,11 @@ def generate_sentence_data(sentence_data):
             data_input.append(data_in)
             
     print(len(data_input))
+    #print(phoneme_timings)
+    #print('----------')
+    #print(times)
+    #for p in phonemes:
+    #    print(p[0])
     return data_input
 
 '''
@@ -220,7 +227,7 @@ def get_data():
     train_data = generate_data(sentences[0])
     create_h5(data = train_data, filename='training')
 
-    normalize_by = np.zeros((243))
+    normalize_by = np.zeros((223))
     for i in range(200,215):
         normalize_by[i] = 1
 
