@@ -1,6 +1,6 @@
 \section{Megvalósítás}
 \subsection{Használt erőforrások}
-A háló összerakást saját gépen kezdtük el. Majd a véglegesítését és a tanításokat AWS szerveren, NVIDIA Tesla K80 12GB videokártyán végeztük. Jupyter notebook-ban futtatuk a tanításokat, kerasban felépített hálóval\ [5], ezek elmentett adatait aztán Tensorboard segítségével elemeztük\ [7].
+A háló összerakást saját gépen kezdtük el. Majd a véglegesítését és a tanításokat AWS szerveren, NVIDIA Tesla K80 12GB videokártyán végeztük. Jupyter notebook-ban futtattuk a tanításokat, Keras-ban felépített hálóval\ [5], ezek elmentett adatait aztán Tensorboard segítségével elemeztük\ [7].
 \subsection{Fejlesztés}
 A fejlesztés során scriptet írtunk az adatok generálására( {\it generate\_dataset.py}). Ez állítja elő a tiszta adatfájlokból a hálók bemeneteit.
 
@@ -45,7 +45,7 @@ költségfüggvény: 0.07214
 	\caption{Pitch tanítás}
 \end{figure}
 \subsubsection{MC paraméterek}
-MC tanításakor kiütközött, hogy a bemeneti paramétereink nagyon megegyezőek voltak fonémán belül, így darabos lett a tanítás. Ez a magasabb MC értékekre jelentős hibát okozott, így megpróbáltuk kevesebb mc érték használatát pontosítani.
+MC tanításakor kiütközött, hogy a bemeneti paramétereink nagyon megegyezők voltak fonémán belül, így darabos lett a tanítás. Ez a magasabb MC értékekre jelentős hibát okozott, így megpróbáltuk kevesebb mc érték használatát pontosítani.
 
 	
 	A teszt adatainkon elért eredmények:
@@ -66,7 +66,7 @@ Innen hiányzik egy kép
 \subsubsection{Fonéma hossz}
 Fonéma hossz becslésnél csoportosítást valósítottunk meg, a fonémákat 8 csoportba osztottuk, a csoportok között 12,5 ms eltéréssel és a csoportra végeztünk classificationt. Erre azért volt szükség mivel viszonylag kevés, géppel annotált tanító adat állt a rendelkezésünkre, ezek alapján nem sikerült használható eredményeket elérni(1000 mondat, kb. 16000 fonéma ami átlagosan egy fonémára 400 mintát jelent, de ez nem egyenletes így előfordulhat olyan fonéma amire ennél jóval kevesebb tanítóadat szerepel). 
 
-Az adatokban szereplő eredeti hosszak vizsgálata után ezt a csoportosítási módot választottuk, két szempont a megfelelő differenciálódás és a jelentősen kilógó adatok levágása volt. Tehát minden fonémánk 40 és 140 ms közé került. (A tanító adatainkat is ez alapján módosítottuk még a feldolgozási fázisban, minden keretnél hosszabb fonémát 140 ms-nél levágunk.)
+Az adatokban szereplő eredeti hosszok vizsgálata után ezt a csoportosítási módot választottuk, két szempont a megfelelő differenciálódás és a jelentősen kilógó adatok levágása volt. Tehát minden fonémánk 40 és 140 ms közé került. (A tanító adatainkat is ez alapján módosítottuk még a feldolgozási fázisban, minden keretnél hosszabb fonémát 140 ms-nél levágunk.)
 
 
 A teszt adatainkon elért eredmények:
@@ -85,12 +85,12 @@ költségfüggvény: 0.02419
 \subsubsection{Teljes becslő}
 A fenti paraméterek ismeretében teljes TTS végezhető. 
 
-A mondat alapján fonéma hosszakat becslünk, majd párhuzamosan zöngésség-alapfrekvencia és mc paraméter becslés folyik, végül a kapott eredményekből előállítható a kimenet.
+A mondat alapján fonéma hosszokat becslünk, majd párhuzamosan zöngésség-alapfrekvencia és mc paraméter becslés folyik, végül a kapott eredményekből előállítható a kimenet.
 \clearpage
 \subsection{Eredmények egy példán bemutatva}
 Az alábbi {\it"But all my dreams violated this law"} mondaton elvégezve a becslést:
 \subsubsection{Adatok beolvasása}
-Az adatok beolvasása egy eredeti hangfájlból (\ref{law-1}.ábra), majd a csöndek szűrése és a pitch-MC paraméterek előállítása(\ref{law-2}.ábra).
+Az adatok beolvasása egy eredeti hangfájlból (\ref{law-1}.ábra), majd a csöndek szűrése és a pitch-MC paraméterek előállítása(\ref{law-2}.ábra). (A szünetek kivágásának következtében rövidült le a hangfájl.)
 \begin{figure}[h]
 	
 	\par\centering	

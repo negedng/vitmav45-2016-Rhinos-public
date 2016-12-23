@@ -1,6 +1,6 @@
-\section{Egyszerű DNN model felépítése}
+\section{Egyszerű DNN modell felépítése}
 
-DNN alapú rendszer esetén is az első fázis a szövegből fonéma alapú címkék előállítása, ezekről részletesebben következő fejezetben írtunk. Ezután meg kell határozni a fonémáknak a hosszát, erre egy egyszerű előrecsatolt háló alkalmas. Az idő paraméterekkel ellátott fonémákból becsülhetőek az aktuális időegységre jellemző gerjesztési és spektrális paraméterek. Ezekből a paraméterekből állítható elő az eredetihez hasonló gépi hang ([4] és a BME Deep Learning előadás során elhangzottak\footnote{http://smartlab.tmit.bme.hu/oktatas-deep-learning-eloadas?eloadas=5}).
+DNN alapú rendszer esetén is az első fázis a szövegből fonéma alapú címkék előállítása, ezekről részletesebben következő fejezetben írtunk. Ezután meg kell határozni a fonémáknak a hosszát, erre egy egyszerű előrecsatolt háló alkalmas. Az idő paraméterekkel ellátott fonémákból becsülhetők az aktuális időegységre jellemző gerjesztési és spektrális paraméterek. Ezekből a paraméterekből állítható elő az eredetihez hasonló gépi hang ([4] és a BME Deep Learning előadás során elhangzottak\footnote{http://smartlab.tmit.bme.hu/oktatas-deep-learning-eloadas?eloadas=5}).
 
 \begin{figure}[h]
 	\includegraphics[width=\textwidth,keepaspectratio]{dnn_struct}
@@ -44,3 +44,4 @@ A megállást early stoppinggal detektáltuk.
 /!TODO háló modell kép
 
 \end{comment}
+

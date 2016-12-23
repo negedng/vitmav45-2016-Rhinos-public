@@ -1,6 +1,6 @@
 \section{Bemeneti és kimeneti paraméterek}
 \subsection{Szövegfüggő címkék}
-A címke generálás egységeként egy mondatot használtunk fel. Ezt az NLTK eszköz segítségével elemeztük majd az eredményekből állítottuk össze a címkéket[6]. A címkék alapjául az aktuális fonémák szolgáltak, később még ezek lettek továbbontva időkeret szerint.A fonéma azonosítására OneHot kódolást alkalmaztunk, azaz minden fonémát 40 értékkel azonosítottunk.
+A címke generálás egységeként egy mondatot használtunk fel. Ezt az NLTK eszköz segítségével elemeztük majd az eredményekből állítottuk össze a címkéket[6]. A címkék alapjául az aktuális fonémák szolgáltak, később még ezek lettek továbbontva időkeret szerint. A fonéma azonosítására OneHot kódolást alkalmaztunk, azaz minden fonémát 40 értékkel azonosítottunk.
 
 A következő szöveg függő címkéket hoztuk létre:
 
@@ -37,8 +37,8 @@ Az előző felsorolást folytatva az aktuális időkerethez tartozó elvárt kim
  
 \begin{itemize}
 	\item 215 a keret hangmagasság értéke
-	\item 216-242 a Mel-Cepstrum 26 paramétere
-	\item 242 a fonémán belüli keretek száma
+	\item 216-221 a Mel-Cepstrum 6 paramétere
+	\item 222 a fonémán belüli keretek száma
 \end{itemize}
 \subsection{Spektrális és gerjesztési paraméterek}
 Mint említettük a prediktálás alapja a spektrális és gerjesztési paraméterek megadása keretenként. Ezen paraméterek segítségével a PyPSTK
@@ -48,7 +48,7 @@ python csomag használatával állíthatjuk elő az audio kimenetet, valamint ha
 A paraméterek előállításához, visszafejtéséhez a PyPSTK Mel-Cepstrum alapú algoritmusát alkalmazzuk. Az algoritmust T. Fukada és társai fejlesztették ki.\ [3]
 
 
-Ezzel a metódussal természetesen adatvesztést kapunk, azonban az így előállított hang még megfelel a mércéinknek. Viszont az általunk generált kimenetek értékelésénél ezt figyelembe kell vennünk.
+Ezzel a metódussal természetesen adatvesztést kapunk, azonban az így előállított hang még megfelel a mércéinknek. Viszont az általunk generált kimenetek értékelésénél ezt figyelembe kell vennünk. (A hálónk nehézkes tanulása miatt döntöttünk 6 paraméter figyelembevétele mellett, és az elvártnál szűkebb mintavételezési tartománynál.)
 \begin{figure}[h]
 	\par
 	\includegraphics[width=\textwidth,keepaspectratio]{audio_raw}
@@ -59,3 +59,4 @@ Ezzel a metódussal természetesen adatvesztést kapunk, azonban az így előál
 	\includegraphics[width=\textwidth,keepaspectratio]{audio_mc}
 	\caption{Mel-Cepstrum után elállítható hang}
 \end{figure}
+
