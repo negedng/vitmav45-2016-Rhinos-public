@@ -25,7 +25,7 @@ Creating a DNN based TTS system.
 
 ### Install
 
-To generate training data [CMU ARCTIC](http://festvox.org/cmu_arctic/) database required in the data_raw folder in a given structure.
+To generate training data with [generate_dataset.py](https://github.com/BME-SmartLab-Education/vitmav45-2016-Rhinos/blob/master/generate_dataset.py) (generate_data() method), [CMU ARCTIC](http://festvox.org/cmu_arctic/) database required in the data_raw folder in a given structure.
 
 Or you can download our preprocessed [dataset](https://s3-us-west-2.amazonaws.com/rhinos-datasets/dataset_5.zip) and unzip it into the preprocessed_data folder.
 
